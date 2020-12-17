@@ -1,15 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>Login</title>
-<link rel="stylesheet" href="css/style.css" />
-</head>
-<body>
 <?php
-require('include/config.php');
 session_start();
-
+$title="Login Page";
+require('include/config.php');
+include 'include/header.php';
 if (isset($_POST['email'])){
     // removes backslashes
 $email = stripslashes($_REQUEST['email']);
@@ -18,12 +11,13 @@ $email = mysqli_real_escape_string($con,$email);
 $password = stripslashes($_REQUEST['password']);
 $password = mysqli_real_escape_string($con,$password);
 //Checking is user existing in the database or not
-  echo  $query = "SELECT * FROM `users` WHERE email='$email'
+    $query = "SELECT * FROM `users` WHERE email='$email'
 and password='".md5($password)."'";
 $result = mysqli_query($con,$query) or die(mysql_error());
 $rows = mysqli_num_rows($result);
+$r= mysqli_fetch_assoc($result);
     if($rows==1){
- $_SESSION['email'] = $email;
+ $_SESSION['userID'] = $r['userID'];
         // Redirect user to index.php
  header("Location: index.php");
      }else{
@@ -33,15 +27,23 @@ echo "<div class='form'>
 }
 }
 ?>
-<div class="form">
-<h1>Log In</h1>
+<article class="container">
+<div class="row">
+<h1 class="text-center">Log In</h1>
 <form action="" method="post">
-<input type="email" name="email" placeholder="email" required />
-<input type="password" name="password" placeholder="Password" required />
-<input name="submit" type="submit" value="Login" />
+<div class="form-group">
+    <label for="">Email address</label>
+<input type="email" class="form-control" name="email" placeholder="email" required />
+</div>
+<div class="form-group">
+    <label for="">Password</label>
+<input type="password" class="form-control" name="password" placeholder="Password" required />
+</div>
+<input name="submit" type="submit" class="btn btn-primary" value="Login" />
 </form>
 <p>Not registered yet? <a href='register.php'>Register Here</a></p>
 </div>
+</article>
 
 </body>
 </html>
